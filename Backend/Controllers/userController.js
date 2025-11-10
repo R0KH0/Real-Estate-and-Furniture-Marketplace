@@ -1,7 +1,66 @@
 import User from "../Models/userModel.js";
 import bcrypt from "bcryptjs";
+import passport from "passport";
+import { generateToken } from "../Utils/generateToken.js";
 
 
+// login user (using Passport Local Strategy)
+export const loginUser = (req, res, next) => {
+  // Input validation
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password required" });
+  }
+
+  // Passport authenticate
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) {
+      console.error("Login error:", err);
+      return res.status(500).json({ message: "An error occurred during login" });
+    }
+
+    if (!user) {
+      return res.status(401).json({ message: info?.message || "Invalid credentials" });
+    }
+
+    // Generate JWT token
+    const token = generateToken(user);
+    
+    // Set httpOnly cookie
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 10 * 60 * 1000, // 10 minutes
+    });
+
+    // Send response
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  })(req, res, next);
+};
+
+// LOGOUT USER
+export const logoutUser = (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 0,
+  });
+  
+  res.json({ message: "Logout successful" });
+};
+
+//create user
 export const createUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
