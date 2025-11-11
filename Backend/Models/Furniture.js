@@ -12,11 +12,7 @@ const furnitureSchema = new mongoose.Schema({
   images: [{ type: String }],
   condition: { type: String, enum: ["new","used"], default: "used" },
   status: { type: String, enum: ["available","sold"], default: "available" },
-  seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  location: {
-    city: { type: String },
-    address: { type: String },
-  },
+  seller: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

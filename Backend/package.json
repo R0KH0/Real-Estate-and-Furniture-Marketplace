@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "mongodb": "^7.0.0",
     "mongoos": "^0.0.1-security",
+    "moongose": "^1.0.0",
     "nodemon": "^3.1.10"
   }
 }

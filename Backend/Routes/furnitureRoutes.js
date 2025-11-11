@@ -6,14 +6,14 @@ import {
   updateFurniture,
   markAsSold,
   deleteFurniture,
-} from "../controllers/furnitureController.js";
+} from "../Controllers/furnitureController.js";
 
 const router = express.Router();
 
-router.get("/", getFurnitureList);
+router.get("/all", getFurnitureList);
 router.get("/:id", getFurnitureById);
 
-router.post("/", createFurniture);
+router.post("/create", createFurniture);
 router.put("/:id", updateFurniture);
 router.patch("/:id/sold", markAsSold);
 router.delete("/:id", deleteFurniture);
