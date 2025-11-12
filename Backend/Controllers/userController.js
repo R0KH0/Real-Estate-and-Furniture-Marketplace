@@ -100,9 +100,30 @@ export const createUser = async (req, res) => {
     }
 };
 
-/*// get all users
-export const getUser = async (req, res) => {
+export const findUsers = async (req, res) => {
+  try {
+    const { query } = req.query; // e.g. ?query=john
+    if (!query) return res.status(400).json({ message: "Please provide a search query" });
 
-}*/
+    let users;
 
-// get user by name
+    if (req.user.role === "admin") {
+      // Admin can search by email OR name
+      users = await User.find({
+        $or: [
+          { email: { $regex: query, $options: "i" } },
+          { name: { $regex: query, $options: "i" } },
+        ],
+      }).select("-password");
+    } else {
+      // Non-admin users can search by name only
+      users = await User.find({
+        name: { $regex: query, $options: "i" },
+      }).select("-password");
+    }
+
+    res.status(200).json({ results: users });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
