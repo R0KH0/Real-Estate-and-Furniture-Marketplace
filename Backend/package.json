@@ -12,11 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.0.0",
-    "mongoos": "^0.0.1-security",
-    "moongose": "^1.0.0",
-    "nodemon": "^3.1.10"
+    "mongoose": "^8.19.3",
+    "nodemon": "^3.1.10",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0"
   }
 }

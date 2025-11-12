@@ -10,11 +10,13 @@ const furnitureSchema = new mongoose.Schema({
     default: "Other",
   },
   images: [{ type: String }],
-  condition: { type: String, enum: ["new","used"], default: "used" },
-  status: { type: String, enum: ["available","sold"], default: "available" },
-  seller: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+  condition: { type: String, enum: ["new", "used"], default: "used" },
+  status: { type: String, enum: ["available", "sold"], default: "available" },
+  sellerName: { type: String, required: true },
+  seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  location: { city: String, address: String },
+}, { timestamps: true}
+);
 
 const Furniture = mongoose.model("Furniture", furnitureSchema);
 export default Furniture;

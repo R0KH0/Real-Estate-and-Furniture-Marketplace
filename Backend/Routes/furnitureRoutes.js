@@ -1,4 +1,5 @@
 import express from "express";
+import passport from "passport";
 import {
   createFurniture,
   getFurnitureList,
@@ -10,12 +11,12 @@ import {
 
 const router = express.Router();
 
-router.get("/all", getFurnitureList);
+router.get("/", getFurnitureList);
 router.get("/:id", getFurnitureById);
 
-router.post("/create", createFurniture);
-router.put("/:id", updateFurniture);
-router.patch("/:id/sold", markAsSold);
-router.delete("/:id", deleteFurniture);
+router.post("/create", passport.authenticate("jwt", { session: false }), createFurniture);
+router.put("/:id", passport.authenticate("jwt", { session: false }), updateFurniture);
+router.patch("/:id/sold", passport.authenticate("jwt", { session: false }), markAsSold);
+router.delete("/:id", passport.authenticate("jwt", { session: false }), deleteFurniture);
 
 export default router;
