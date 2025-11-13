@@ -16,6 +16,9 @@ router.post(
     res.status(200).json({ message: "Login successful" });
   }
 );
+//logout route
+router.post("/logout", logoutUser);
+
 // Route to search users (protected)
 router.get(
   "/search",
@@ -23,7 +26,6 @@ router.get(
   findUsers
 );
 
-router.post("/logout", logoutUser);
 // Route to create a new user
 router.post("/create", createUser);
 
