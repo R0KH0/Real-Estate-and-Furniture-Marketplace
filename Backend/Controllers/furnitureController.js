@@ -1,4 +1,4 @@
-import Furniture from "../Models/Furniture.js";
+import Furniture from "../Models/furnitureModel.js";
 
 // Create
 export const createFurniture = async (req, res) => {
@@ -24,17 +24,26 @@ export const createFurniture = async (req, res) => {
 };
 
 // Get all
-export const getFurnitureList = async (req, res) => {
-  try {
-    const { category, minPrice, maxPrice, q, status, page = 1, limit = 12 } = req.query;
-    const filter = {};
+    export const getFurnitureList = async (req, res) => {
+      try {
+        const { category, minPrice, maxPrice, q, status, page = 1, limit = 12 } = req.query;
+        const filter = {};
 
-    if (category) filter.category = category;
-    if (status) filter.status = status;
-    if (minPrice || maxPrice) filter.price = {};
-    if (minPrice) filter.price.$gte = Number(minPrice);
-    if (maxPrice) filter.price.$lte = Number(maxPrice);
-    if (q) filter.$text = { $search: q };
+        if (category) filter.category = category;
+        if (status) filter.status = status;
+        if (minPrice || maxPrice) filter.price = {};
+        if (minPrice) filter.price.$gte = Number(minPrice);
+        if (maxPrice) filter.price.$lte = Number(maxPrice);
+        
+        // Case-insensitive search for q
+    if (q && q.trim() !== "") {
+      const regex = new RegExp(q, "i"); // 'i' = ignore case
+      filter.$or = [
+        { title: regex },
+        { description: regex },
+        { category: regex },
+      ];
+    }
 
     const skip = (page - 1) * limit;
     const items = await Furniture.find(filter)
