@@ -4,8 +4,6 @@ import cookieParser from "cookie-parser";
 import passport from "./Config/passport.js";
 import connectDB from "./Config/db.js";
 import userRoutes from "./Routes/userRoute.js";
-import propertyRoutes from "./Routes/propertyRoutes.js";
-import path from "path";
 
 
 dotenv.config();
@@ -26,8 +24,6 @@ app.get("/", (req, res) => {
 
 //user routes
 app.use("/api/users", userRoutes);
-app.use("/api/properties", propertyRoutes);
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running http://localhost:${PORT}/`));

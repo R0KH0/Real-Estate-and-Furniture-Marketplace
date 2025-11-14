@@ -100,6 +100,7 @@ export const createUser = async (req, res) => {
     }
 };
 
+//find users
 export const findUsers = async (req, res) => {
   try {
     const { query } = req.query; // e.g. ?query=john
@@ -127,3 +128,28 @@ export const findUsers = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+// update user details
+export const updateUser = async (req, res) => {
+  try {
+    const updated = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).select("-password");
+
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      message: "User updated successfully",
+      user: updated,
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
