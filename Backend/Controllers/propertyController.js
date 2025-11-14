@@ -1,7 +1,6 @@
 import Property from "../Models/Property.js";
 import { validationResult } from "express-validator";
 
-// ➕ Créer une propriété (propriétaire connecté)
 export const createProperty = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -26,7 +25,6 @@ export const createProperty = async (req, res) => {
   }
 };
 
-// 🔄 Récupérer toutes les propriétés avec filtre
 export const getProperties = async (req, res) => {
   try {
     const { location, minPrice, maxPrice, status } = req.query;
@@ -45,7 +43,6 @@ export const getProperties = async (req, res) => {
   }
 };
 
-// 🔍 Récupérer une propriété par id
 export const getPropertyById = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id).populate("owner", "name email");
@@ -55,6 +52,7 @@ export const getPropertyById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // ✏️ Modifier une propriété (propriétaire uniquement)
 export const updateProperty = async (req, res) => {
@@ -81,7 +79,6 @@ export const updateProperty = async (req, res) => {
   }
 };
 
-// ❌ Supprimer une propriété (propriétaire uniquement)
 export const deleteProperty = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);

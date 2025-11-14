@@ -18,6 +18,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+router.get("/search", getProperties);
+
+
 // 🏠 Routes properties
 router.get("/", getProperties);
 router.get("/:id", getPropertyById);
