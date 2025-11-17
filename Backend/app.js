@@ -7,6 +7,7 @@ import userRoutes from "./Routes/userRoute.js";
 import propertyRoutes from "./Routes/propertyRoutes.js";
 import path from "path";
 
+import furnitureRoutes from "./Routes/furnitureRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,9 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/properties", propertyRoutes);
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
+
+//furniture routes
+app.use("/api/furniture", furnitureRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running http://localhost:${PORT}/`));
