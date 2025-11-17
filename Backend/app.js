@@ -24,6 +24,8 @@ app.get("/", (req, res) => {
 
 //user routes
 app.use("/api/users", userRoutes);
+
+//furniture routes
 app.use("/api/furniture", furnitureRoutes);
 
 const PORT = process.env.PORT || 5000;
