@@ -4,6 +4,11 @@ import Furniture from "../Models/furnitureModel.js";
 export const createFurniture = async (req, res) => {
   try {
     const user = req.user;
+
+    // ✅ Updated part: handle string location safely
+    let location = req.body.location;
+    if (typeof location === "string") location = { city: location, address: "" };
+
     const newFurniture = new Furniture({
       title: req.body.title,
       description: req.body.description,
@@ -11,7 +16,7 @@ export const createFurniture = async (req, res) => {
       category: req.body.category,
       images: req.body.images,
       condition: req.body.condition,
-      location: req.body.location,
+      location, // use safe location
       sellerName: user.name,
       seller: user._id,
     });
@@ -24,20 +29,19 @@ export const createFurniture = async (req, res) => {
 };
 
 // Get all
-    export const getFurnitureList = async (req, res) => {
-      try {
-        const { category, minPrice, maxPrice, q, status, page = 1, limit = 12 } = req.query;
-        const filter = {};
+export const getFurnitureList = async (req, res) => {
+  try {
+    const { category, minPrice, maxPrice, q, status, page = 1, limit = 12 } = req.query;
+    const filter = {};
 
-        if (category) filter.category = category;
-        if (status) filter.status = status;
-        if (minPrice || maxPrice) filter.price = {};
-        if (minPrice) filter.price.$gte = Number(minPrice);
-        if (maxPrice) filter.price.$lte = Number(maxPrice);
-        
-        // Case-insensitive search for q
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+    if (minPrice || maxPrice) filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+
     if (q && q.trim() !== "") {
-      const regex = new RegExp(q, "i"); // 'i' = ignore case
+      const regex = new RegExp(q, "i");
       filter.$or = [
         { title: regex },
         { description: regex },
@@ -74,6 +78,11 @@ export const updateFurniture = async (req, res) => {
   try {
     const item = await Furniture.findById(req.params.id);
     if (!item) return res.status(404).json({ message: "Not found" });
+
+    if (req.body.location && typeof req.body.location === "string") {
+      req.body.location = { city: req.body.location, address: "" };
+    }
+
     Object.assign(item, req.body);
     await item.save();
     res.status(200).json(item);
