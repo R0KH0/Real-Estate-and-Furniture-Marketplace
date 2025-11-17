@@ -2,15 +2,25 @@ import jwt from "jsonwebtoken";
 
 export const checkAlreadyLoggedIn = (req, res, next) => {
   const token = req.cookies?.jwt;
-  if (!token) return next(); // no token -> continue login normally
+
+  // No token  user is not logged in  allow login
+  if (!token) return next();
 
   try {
-    // verify token
-    jwt.verify(token, process.env.JWT_SECRET);
-    // if verify success -> token is valid
-    return res.status(400).json({ message: "You are already logged in" });
+    // Decode and verify
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // If valid user is logged in
+    return res.status(400).json({
+      message: "You are already logged in",
+      user: {
+        id: decoded.id,
+        role: decoded.role,
+      },
+    });
+
   } catch (err) {
-    // token expired or invalid -> allow login
+    // Token expired or invalid → allow login
     return next();
   }
 };

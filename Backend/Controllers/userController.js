@@ -100,6 +100,7 @@ export const createUser = async (req, res) => {
     }
 };
 
+//find users
 export const findUsers = async (req, res) => {
   try {
     const { query } = req.query; // e.g. ?query=john
@@ -125,5 +126,65 @@ export const findUsers = async (req, res) => {
     res.status(200).json({ results: users });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// update user details
+export const updateUser = async (req, res) => {
+  try {
+    const updated = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).select("-password");
+
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      message: "User updated successfully",
+      user: updated,
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//delete user
+export const deleteUser = async (req, res) => {
+  try {
+    const userIdToDelete = req.params.id;
+    const loggedUserId = req.user._id.toString();
+    const isAdmin = req.user.role === "admin";
+
+    const deleted = await User.findByIdAndDelete(userIdToDelete);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If a user deleted their OWN account → logout by clearing cookie
+    if (!isAdmin && userIdToDelete === loggedUserId) {
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+      });
+
+      return res.json({
+        message: "Your account has been deleted. You are now logged out.",
+      });
+    }
+
+    // Admin deleting another user
+    return res.json({
+      message: "User deleted successfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
