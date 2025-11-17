@@ -5,7 +5,6 @@ export const createFurniture = async (req, res) => {
   try {
     const user = req.user;
 
-    // ✅ Updated part: handle string location safely
     let location = req.body.location;
     if (typeof location === "string") location = { city: location, address: "" };
 
